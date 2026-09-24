@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TDE Alpha</title>
+<meta name="description" content="TDE Alpha — profile">
+<link rel="preconnect" href="https://wsrv.nl">
+<link rel="preconnect" href="https://raw.githubusercontent.com">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="preload" as="image" href="https://wsrv.nl/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fuuhjeike%2FTDE-Alpha%2Fmain%2FFB_IMG_1789464542803.jpg&amp;w=320&amp;h=320&amp;fit=cover&amp;output=webp&amp;q=80" fetchpriority="high">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- fonts load without blocking the first paint -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"></noscript>
+<style>
+/* ============================================================
+   TDE Alpha — tokens
+   ============================================================ */
+:root {
+  --bg:            #0a0d10;
+  --bg-grid:       #14202a;
+  --panel:         #12161a;
+  --panel-2:       #171c21;
+  --line:          #262e35;
+  --line-soft:     #1c2228;
+  --steel:         #7b8894;
+  --steel-bright:  #a9b6c1;
+  --ink:           #e7eaed;
+  --ink-dim:       #96a0a8;
+  --ink-faint:     #5c666e;
+  --accent:        #4f7f9c;
+  --accent-dim:    #2f4a5a;
+
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, monospace;
+
+  --radius:  14px;
+  --radius-sm: 8px;
+  --shadow-card: 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.65);
+  --stopwatch-h: 68px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(79,127,156,.10), transparent 60%),
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fixed blueprint grid + drafting corner marks, applied to the whole viewport */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size: 88px 88px, 88px 88px, 22px 22px, 22px 22px;
+  background-position: -1px -1px;
+  opacity: .28;
+  mask-image: radial-gradient(ellipse 900px 700px at 50% 0%, black, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 900px 700px at 50% 0%, black, transparent 78%);
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 56px 18px 40px;
+}
+
+::selection { background: var(--accent-dim); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Profile
+   ============================================================ */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+.profile__photo-frame {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(155deg, #4a5761 0%, #23282d 45%, #4a5761 100%);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.03),
+    0 18px 40px -14px rgba(0,0,0,.75);
+}
+
+.profile__photo-frame::after {
+  /* engineering tick — small crosshair accent, bottom-right of the ring */
+  content: "";
+  position: absolute;
+  right: -3px;
+  bottom: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg), 0 0 10px 1px rgba(79,127,156,.6);
+}
+
+.profile__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--panel-2);
+}
+
+.profile__photo-frame--fallback .profile__photo {
+  opacity: 0;
+}
+.profile__photo-frame--fallback::before {
+  content: "TDE";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: .08em;
+  color: var(--ink-dim);
+  background: var(--panel-2);
+}
+
+.profile__name {
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 5vw, 1.85rem);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* ============================================================
+   Feed / posts
+   ============================================================ */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.post {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.post__body {
+  padding: 18px 20px;
+}
+
+.post__date {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+  letter-spacing: .02em;
+}
+
+.post__text {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink);
+  white-space: pre-line;
+}
+
+.post__meta {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--ink-dim);
+  border-top: 1px solid var(--line-soft);
+  padding-top: 10px;
+}
+
+.post__media {
+  display: grid;
+  gap: 2px;
+}
+
+.post__media[data-count="1"] { grid-template-columns: 1fr; }
+.post__media[data-count="2"] { grid-template-columns: 1fr 1fr; }
+.post__media[data-count="3"],
+.post__media[data-count="4"] { grid-template-columns: 1fr 1fr; }
+
+.post__img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--panel-2);
+  overflow: hidden;
+}
+
+.post__media[data-count="1"] .post__img-wrap {
+  aspect-ratio: 16 / 11;
+}
+
+.post__img-wrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .45s ease;
+}
+
+.post__img-wrap img.is-loaded {
+  opacity: 1;
+}
+
+/* lightweight shimmer placeholder while an image loads */
+.post__img-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, var(--panel-2) 30%, #1d242a 50%, var(--panel-2) 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.7s ease-in-out infinite;
+}
+
+.post__img-wrap.is-loaded::before,
+.post__img-wrap.is-failed::before {
+  animation: none;
+  background: none;
+  content: none;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 140% 0; }
+  100% { background-position: -40% 0; }
+}
+
+/* clean fallback for a failed image */
+.post__img-wrap.is-failed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.post__img-wrap.is-failed::after {
+  content: "Image unavailable";
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: .02em;
+}
+
+/* ============================================================
+   Infinite stopwatch — sits at the very bottom, right after the last post
+   ============================================================ */
+.stopwatch {
+  position: relative;
+  margin-top: 22px;
+  height: var(--stopwatch-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #10151a 0%, #0b0e11 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 0 12px;
+}
+
+.stopwatch__inner {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-mono);
+  color: var(--steel-bright);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.stopwatch__inner::-webkit-scrollbar { display: none; }
+
+.stopwatch__seg {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.stopwatch__seg span {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.stopwatch__seg small {
+  font-size: 10px;
+  color: var(--ink-faint);
+  font-weight: 400;
+}
+
+.stopwatch__sep {
+  color: var(--ink-faint);
+  font-size: 14px;
+}
+
+/* ============================================================
+   Lightbox — full-size photo viewer
+   ============================================================ */
+.post__img-wrap {
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+.post__img-wrap:focus-visible { outline-offset: -2px; }
+
+html.lb-open,
+html.lb-open body { overflow: hidden; }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 8, 10, .96);
+  opacity: 0;
+  transition: opacity .2s ease;
+  overscroll-behavior: contain;
+  touch-action: pinch-zoom;
+}
+.lightbox[hidden] { display: none; }
+.lightbox.is-open { opacity: 1; }
+
+.lightbox__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(64px, env(safe-area-inset-top)) 12px max(52px, env(safe-area-inset-bottom));
+}
+
+.lightbox__img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: var(--shadow-card);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.lightbox__img:not([src]) { visibility: hidden; }
+
+.lightbox__status {
+  position: absolute;
+  left: 50%;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: var(--ink-dim);
+  background: rgba(18, 22, 26, .88);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+.lightbox__status[hidden] { display: none; }
+
+.lightbox__btn {
+  position: absolute;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(18, 22, 26, .88);
+  color: var(--ink);
+  cursor: pointer;
+}
+.lightbox__btn:hover { background: var(--panel-2); border-color: var(--steel); }
+.lightbox__btn[hidden] { display: none; }
+.lightbox__btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lightbox__close {
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+}
+.lightbox__prev { left: 12px; top: 50%; margin-top: -22px; }
+.lightbox__next { right: 12px; top: 50%; margin-top: -22px; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (min-width: 640px) {
+  .page { padding-top: 72px; }
+  .profile__photo-frame { width: 152px; height: 152px; }
+  .post__body { padding: 22px 26px; }
+  .stopwatch__seg span { font-size: 17px; }
+}
+
+@media (max-width: 360px) {
+  .stopwatch__inner { gap: 6px; }
+  .stopwatch__sep { font-size: 12px; }
+  .stopwatch__seg span { font-size: 14px; }
+  .stopwatch__seg small { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox { transition: none; }
+  .post__img-wrap::before { animation: none; background: var(--panel-2); }
+  .post__img-wrap img { transition: none; }
+}
+
+</style>
+</head>
+<body>
+
+<main class="page">
+
+  <!-- Profile -->
+  <section class="profile" aria-label="Profile">
+    <div class="profile__photo-frame">
+      <img
+        class="profile__photo"
+        src="https://wsrv.nl/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fuuhjeike%2FTDE-Alpha%2Fmain%2FFB_IMG_1789464542803.jpg&amp;w=320&amp;h=320&amp;fit=cover&amp;output=webp&amp;q=80"
+        alt="TDE Alpha profile photo"
+        width="176"
+        height="176"
+        fetchpriority="high"
+        decoding="async"
+        onerror="if(!this.dataset.f){this.dataset.f='1';this.src='https://raw.githubusercontent.com/uuhjeike/TDE-Alpha/main/FB_IMG_1789464542803.jpg';}else{this.closest('.profile__photo-frame').classList.add('profile__photo-frame--fallback');}"
+      >
+    </div>
+    <h1 class="profile__name">TDE Alpha</h1>
+  </section>
+
+  <!-- Feed -->
+  <section class="feed" id="feed" aria-label="Posts">
+    <!-- posts are rendered here by script.js -->
+  </section>
+
+  <!-- Infinite stopwatch — very bottom, after the last post -->
+  <footer class="stopwatch" id="stopwatch" aria-label="Elapsed time counter">
+    <div class="stopwatch__inner">
+      <span class="stopwatch__seg"><span id="sw-days">000000</span><small>Days</small></span>
+      <span class="stopwatch__sep">:</span>
+      <span class="stopwatch__seg"><span id="sw-hours">00</span><small>Hours</small></span>
+      <span class="stopwatch__sep">:</span>
+      <span class="stopwatch__seg"><span id="sw-minutes">00</span><small>Minutes</small></span>
+      <span class="stopwatch__sep">:</span>
+      <span class="stopwatch__seg"><span id="sw-seconds">00</span><small>Seconds</small></span>
+    </div>
+  </footer>
+
+</main>
+
+<!-- Lightbox — opens a photo in full size when tapped -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <div class="lightbox__stage" id="lb-stage">
+    <img class="lightbox__img" id="lb-img" alt="" decoding="async" draggable="false">
+    <div class="lightbox__status" id="lb-status" role="status" hidden>Loading full size…</div>
+  </div>
+  <button type="button" class="lightbox__btn lightbox__close" id="lb-close" aria-label="Close photo">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <button type="button" class="lightbox__btn lightbox__prev" id="lb-prev" aria-label="Previous photo" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <button type="button" class="lightbox__btn lightbox__next" id="lb-next" aria-label="Next photo" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
+</div>
+
+<script>
+/* ============================================================
+   POST DATA
+   ------------------------------------------------------------
+   Add future posts by adding another object to this array.
+   Newest post should be placed first.
+
+   Fields:
+     text   (string, optional)  — post text. Omit or "" to skip.
+     images (array,  optional)  — one or more image URLs. [] or
+                                   omit for a text-only post.
+     date   (string, optional)  — shown above the text, e.g. "12 Sep 2026".
+     meta   (string, optional)  — small extra line under the post.
+
+   Example of a future post:
+   {
+     date: "5 Oct 2026",
+     text: "Post text here.",
+     images: ["https://raw.githubusercontent.com/.../photo.jpg"]
+   }
+   ============================================================ */
+const POSTS = [
+  {
+    text: "Class routine",
+    images: [
+      "https://raw.githubusercontent.com/uuhjeike/TDE-Alpha/main/Post/2026/IMG_20260924_134527.jpg"
+    ]
+  },
+  {
+    images: [
+      "https://raw.githubusercontent.com/uuhjeike/TDE-Alpha/main/Post/2026/IMG_20260924_114047.jpg",
+      "https://raw.githubusercontent.com/uuhjeike/TDE-Alpha/main/Post/2026/IMG_20260924_113726.jpg"
+    ]
+  },
+  {
+    text: "23 tarike class."
+  }
+];
+
+/* ============================================================
+   RENDER FEED
+   Text, dates and empty image frames are drawn instantly.
+   Images are then filled in by the FAST IMAGE PIPELINE below.
+   ============================================================ */
+const feedEl = document.getElementById('feed');
+const items = [];   // every post image, in feed order
+
+/* Original GitHub URL -> list of URLs to try, fastest first:
+   1) resized WebP via image CDN (phone photos are ~3 MB, this makes them ~60-120 KB)
+   2) jsDelivr edge copy of the original
+   3) the original raw.githubusercontent.com file                                   */
+function buildSources(url, width) {
+  const list = ['https://wsrv.nl/?url=' + encodeURIComponent(url) +
+                '&w=' + width + '&we&output=webp&q=72'];
+  const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/);
+  if (m) list.push('https://cdn.jsdelivr.net/gh/' + m[1] + '/' + m[2] + '@' + m[3] + '/' + m[4]);
+  list.push(url);
+  return list;
+}
+
+function renderPosts(posts) {
+  const frag = document.createDocumentFragment();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  posts.forEach((post, pi) => {
+    const card = document.createElement('article');
+    card.className = 'post';
+
+    const body = document.createElement('div');
+    body.className = 'post__body';
+
+    if (post.date) {
+      const date = document.createElement('span');
+      date.className = 'post__date';
+      date.textContent = post.date;
+      body.appendChild(date);
+    }
+    if (post.text) {
+      const text = document.createElement('p');
+      text.className = 'post__text';
+      text.textContent = post.text;
+      body.appendChild(text);
+    }
+    if (post.meta) {
+      const meta = document.createElement('p');
+      meta.className = 'post__meta';
+      meta.textContent = post.meta;
+      body.appendChild(meta);
+    }
+    if (body.childNodes.length) card.appendChild(body);
+
+    if (post.images && post.images.length) {
+      const media = document.createElement('div');
+      media.className = 'post__media';
+      const count = Math.min(post.images.length, 4);
+      media.dataset.count = String(count);
+      const width = Math.round((count === 1 ? 540 : 280) * dpr);
+
+      post.images.forEach(src => {
+        const wrap = document.createElement('div');
+        wrap.className = 'post__img-wrap';
+
+        const img = document.createElement('img');
+        img.alt = post.text ? 'Photo for: ' + post.text : 'TDE Alpha post photo';
+        img.decoding = 'async';
+        // src is NOT set here — the pipeline decides when each image starts.
+
+        wrap.appendChild(img);
+        media.appendChild(wrap);
+
+        const item = {
+          img, wrap,
+          srcs: buildSources(src, width),  // small, fast versions for the feed
+          full: src,                       // original file for the lightbox
+          alt: img.alt,
+          group: pi,                       // which post this photo belongs to
+          state: 'idle'
+        };
+        items.push(item);
+
+        // Tap / click / Enter opens the full-size viewer.
+        wrap.tabIndex = 0;
+        wrap.setAttribute('role', 'button');
+        wrap.setAttribute('aria-label', 'Open photo in full size');
+        wrap.addEventListener('click', () => openLightbox(item));
+        wrap.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(item); }
+        });
+      });
+
+      card.appendChild(media);
+    }
+
+    frag.appendChild(card);
+  });
+
+  feedEl.appendChild(frag);
+}
+
+renderPosts(POSTS);
+
+/* ============================================================
+   FAST IMAGE PIPELINE
+   1. Images the visitor can see right now start immediately,
+      all in parallel, at high priority.
+   2. Every other image then loads ONE BY ONE in feed order,
+      in the background, at low priority.
+   3. If the visitor scrolls to an image that hasn't loaded
+      yet, it jumps the queue and loads right away.
+   ============================================================ */
+let urgentInFlight = 0;   // visible images currently downloading
+let bgInFlight = false;   // one background image at a time
+let lbOpen = false;       // full-size viewer open? (pauses the background queue)
+const saveData = !!(navigator.connection && navigator.connection.saveData);
+
+function startItem(item, urgent) {
+  if (item.state !== 'idle') return;
+  item.state = 'loading';
+  if (urgent) urgentInFlight++; else bgInFlight = true;
+
+  const img = item.img;
+  img.fetchPriority = urgent ? 'high' : 'low';
+
+  let i = 0;
+  let timer;
+
+  const finish = ok => {
+    if (item.state === 'done') return;
+    item.state = 'done';
+    clearTimeout(timer);
+    img.onload = img.onerror = null;
+    item.wrap.classList.add(ok ? 'is-loaded' : 'is-failed');
+    if (ok) img.classList.add('is-loaded');
+    if (urgent) urgentInFlight--; else bgInFlight = false;
+    pump();
+  };
+
+  const tryNext = () => {
+    if (i >= item.srcs.length) return finish(false);
+    const isLast = i === item.srcs.length - 1;
+    img.src = item.srcs[i++];
+    // if a source is stalling, move on to the next one after 7s
+    if (!isLast) timer = setTimeout(tryNext, 7000);
+  };
+
+  img.onload = () => finish(true);
+  img.onerror = () => { clearTimeout(timer); tryNext(); };
+  tryNext();
+}
+
+// Background queue: runs only when nothing visible is still loading.
+function pump() {
+  if (saveData || lbOpen || urgentInFlight > 0 || bgInFlight) return;
+  const next = items.find(it => it.state === 'idle');
+  if (next) startItem(next, false);
+}
+
+// Step 1 — what the visitor sees right now goes first.
+items.forEach(it => {
+  const r = it.wrap.getBoundingClientRect();
+  if (r.bottom > 0 && r.top < window.innerHeight) startItem(it, true);
+});
+
+// Step 2 — then the rest, one by one.
+pump();
+
+// Step 3 — anything the visitor scrolls toward jumps the queue.
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const it = items.find(x => x.wrap === entry.target);
+      if (it) startItem(it, true);
+      obs.unobserve(entry.target);
+    });
+  }, { rootMargin: '300px 0px', threshold: 0.01 });
+
+  items.forEach(it => { if (it.state === 'idle') observer.observe(it.wrap); });
+}
+
+/* ============================================================
+   LIGHTBOX — tap a photo to see it in full size
+   ------------------------------------------------------------
+   The small version already on screen appears instantly, then
+   the original full-resolution file loads and replaces it.
+   ← / → keys, buttons or a swipe move between photos of the
+   same post. Esc, X, tapping the dark area, or the browser
+   Back button closes it.
+   ============================================================ */
+const lbEl     = document.getElementById('lightbox');
+const lbImg    = document.getElementById('lb-img');
+const lbStatus = document.getElementById('lb-status');
+const lbClose  = document.getElementById('lb-close');
+const lbPrev   = document.getElementById('lb-prev');
+const lbNext   = document.getElementById('lb-next');
+
+let lbGroup = [];
+let lbIndex = 0;
+let lbToken = 0;        // guards against stale loads when switching photos fast
+let lbLoader = null;
+let lbLastFocus = null;
+
+function cancelLbLoader() {
+  if (!lbLoader) return;
+  lbLoader.onload = lbLoader.onerror = null;
+  lbLoader.src = '';
+  lbLoader = null;
+}
+
+function showLightboxImage() {
+  const it = lbGroup[lbIndex];
+  const token = ++lbToken;
+  cancelLbLoader();
+
+  lbImg.alt = it.alt;
+  lbPrev.hidden = lbNext.hidden = lbGroup.length < 2;
+
+  // Instant: the small version that's already loaded in the feed.
+  if (it.img.classList.contains('is-loaded')) lbImg.src = it.img.currentSrc || it.img.src;
+  else lbImg.removeAttribute('src');
+
+  lbStatus.textContent = 'Loading full size…';
+  lbStatus.hidden = false;
+
+  // Then: the original file (jsDelivr edge first, raw GitHub as fallback).
+  const sources = buildSources(it.full, 0).slice(1);
+  let i = 0;
+  const tryNext = () => {
+    if (token !== lbToken) return;
+    if (i >= sources.length) { lbStatus.textContent = 'Full size unavailable'; return; }
+    const loader = new Image();
+    lbLoader = loader;
+    loader.decoding = 'async';
+    loader.onload = () => {
+      if (token !== lbToken) return;
+      lbImg.src = loader.src;
+      lbStatus.hidden = true;
+    };
+    loader.onerror = tryNext;
+    loader.src = sources[i++];
+  };
+  tryNext();
+}
+
+function openLightbox(item) {
+  lbGroup = items.filter(x => x.group === item.group);
+  lbIndex = lbGroup.indexOf(item);
+  lbLastFocus = document.activeElement;
+  lbOpen = true;
+
+  lbEl.hidden = false;
+  document.documentElement.classList.add('lb-open');
+  requestAnimationFrame(() => lbEl.classList.add('is-open'));
+  showLightboxImage();
+  lbClose.focus({ preventScroll: true });
+
+  // lets the phone's Back button close the viewer instead of leaving the page
+  try { history.pushState({ lb: true }, ''); } catch (e) {}
+}
+
+function hideLightbox() {
+  if (!lbOpen) return;
+  lbOpen = false;
+  lbToken++;
+  cancelLbLoader();
+  lbEl.classList.remove('is-open');
+  lbEl.hidden = true;
+  lbImg.removeAttribute('src');
+  document.documentElement.classList.remove('lb-open');
+  if (lbLastFocus && lbLastFocus.focus) lbLastFocus.focus({ preventScroll: true });
+  pump(); // resume background loading
+}
+
+function closeLightbox() {
+  if (!lbOpen) return;
+  if (history.state && history.state.lb) history.back(); // popstate hides it
+  else hideLightbox();
+}
+
+function stepLightbox(dir) {
+  if (lbGroup.length < 2) return;
+  lbIndex = (lbIndex + dir + lbGroup.length) % lbGroup.length;
+  showLightboxImage();
+}
+
+lbClose.addEventListener('click', closeLightbox);
+lbPrev.addEventListener('click', () => stepLightbox(-1));
+lbNext.addEventListener('click', () => stepLightbox(1));
+lbEl.addEventListener('click', e => {
+  if (e.target === lbEl || e.target.id === 'lb-stage') closeLightbox();
+});
+window.addEventListener('popstate', () => { if (lbOpen) hideLightbox(); });
+
+document.addEventListener('keydown', e => {
+  if (!lbOpen) return;
+  if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowLeft') stepLightbox(-1);
+  else if (e.key === 'ArrowRight') stepLightbox(1);
+  else if (e.key === 'Tab') {
+    // keep keyboard focus inside the viewer
+    const f = [lbClose, lbPrev, lbNext].filter(b => !b.hidden);
+    const i = f.indexOf(document.activeElement);
+    e.preventDefault();
+    f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+  }
+});
+
+// Swipe left/right to change photo (ignored while pinch-zoomed in).
+let swipeX = null, swipeY = 0;
+lbEl.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) { swipeX = e.touches[0].clientX; swipeY = e.touches[0].clientY; }
+  else swipeX = null;
+}, { passive: true });
+lbEl.addEventListener('touchend', e => {
+  if (swipeX === null) return;
+  const t = e.changedTouches[0];
+  const dx = t.clientX - swipeX, dy = t.clientY - swipeY;
+  swipeX = null;
+  if (window.visualViewport && window.visualViewport.scale > 1.05) return;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) stepLightbox(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+/* ============================================================
+   INFINITE STOPWATCH — Bangladesh Standard Time (Asia/Dhaka, UTC+6)
+   ------------------------------------------------------------
+   Recalculated from a fixed start timestamp on every tick, so
+   browser timer throttling (background tabs, inactive screens)
+   never causes drift — the moment the tab wakes up, the display
+   catches up correctly because it's always derived from real
+   elapsed milliseconds, not accumulated ticks.
+   ============================================================ */
+const STOPWATCH_START = new Date('2026-09-15T00:00:00+06:00').getTime();
+
+const swDays = document.getElementById('sw-days');
+const swHours = document.getElementById('sw-hours');
+const swMinutes = document.getElementById('sw-minutes');
+const swSeconds = document.getElementById('sw-seconds');
+
+function pad(num, len) {
+  return String(num).padStart(len, '0');
+}
+
+function updateStopwatch() {
+  const now = Date.now();
+  let elapsed = now - STOPWATCH_START;
+  if (elapsed < 0) elapsed = 0; // safety guard, never goes negative
+
+  const SEC = 1000;
+  const MIN = 60 * SEC;
+  const HOUR = 60 * MIN;
+  const DAY = 24 * HOUR;
+
+  const days = Math.floor(elapsed / DAY);
+  const hours = Math.floor((elapsed % DAY) / HOUR);
+  const minutes = Math.floor((elapsed % HOUR) / MIN);
+  const seconds = Math.floor((elapsed % MIN) / SEC);
+
+  swDays.textContent = pad(days, 6);
+  swHours.textContent = pad(hours, 2);
+  swMinutes.textContent = pad(minutes, 2);
+  swSeconds.textContent = pad(seconds, 2);
+}
+
+updateStopwatch();
+setInterval(updateStopwatch, 1000);
+
+// Recalculate immediately whenever the tab regains focus/visibility,
+// so throttled background timers never leave a stale display.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') updateStopwatch();
+});
+window.addEventListener('focus', updateStopwatch);
+window.addEventListener('pageshow', updateStopwatch);
+
+</script>
+</body>
+</html>
